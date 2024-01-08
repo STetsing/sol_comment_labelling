@@ -1,7 +1,7 @@
 # Solidity Comment Function Labelling
 This repo provides a Web UI for quickly labeling solididy functions using the Gradio interface
-
-    - First press the `Start` button to get started.
+    - First Enter your Name
+    - Then Press the `Start` button to get started.
     - Analyze both the comment and the associated code
     - Correct either the comment or the code to be aligned. Also correct both is necessary
     - If possible reduce the comment to be shorter and precise

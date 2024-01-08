@@ -21,14 +21,17 @@ def com_code_generator(dataset):
 
 data_gen = com_code_generator(data)
 
-def record_input(fname, com, code, flag=False):
+def record_input(fname, com, code, labeler, flag=False):
+    if labeler == "":
+        gr.Warning("Labeler Name is empty")
+
     if flag:
-        output = {"file_name":fname, "comments":com, "code_string":code}
+        output = {"labeler":labeler, "date":datetime.now().strftime("%m/%d/%Y, %H:%M:%S"), "file_name":fname, "comments":com, "code_string":code}
         with open(flagged, 'wa') as fhl: 
             json.dump(output, fhl)
             fhl.write("\n")
     else:
-        output = {"comments":com, "code_string":code}
+        output = {"labeler":labeler, "date":datetime.now().strftime("%m/%d/%Y, %H:%M:%S"), "comments":com, "code_string":code}
         with open(label_results_file, 'a') as fhl: 
             json.dump(output, fhl)
             fhl.write("\n")
@@ -43,7 +46,8 @@ with gr.Blocks(theme=gr.themes.Default(primary_hue=gr.themes.colors.green, secon
     gr.Markdown(
     """
     # Label Solidity Comment-Code Pair
-    - First press the `Start` button to get started.
+    - First Enter your Name
+    - Then Press the `Start` button to get started.
     - Analyze both the comment and the associated code
     - Correct either the comment or the code to be aligned. Also correct both is necessary
     - If possible reduce the comment to be shorter and precise
@@ -54,6 +58,7 @@ with gr.Blocks(theme=gr.themes.Default(primary_hue=gr.themes.colors.green, secon
     P.S. Each piece of code originates from a contract file, therefore some variable might be declared outside the function scope
     """)
 
+    labeler = gr.Textbox(None, visible=True, label="Your Name")
     start_btn = gr.Button("Start", variant="primary")
     fname = gr.Textbox("Contract File name", visible=False)
     comment = gr.Textbox("Comment", visible=True, show_copy_button=True, label="Comment", )
@@ -63,8 +68,8 @@ with gr.Blocks(theme=gr.themes.Default(primary_hue=gr.themes.colors.green, secon
         flag = gr.Button("Flag", variant="secondary")
 
     start_btn.click(fn=Start, outputs= [fname, comment, code])
-    submit.click(record_input, inputs=[fname, comment, code], outputs=[fname, comment, code])
-    flag.click(record_input, inputs=[fname, comment, code], outputs=[fname, comment, code])
+    submit.click(record_input, inputs=[fname, comment, code, labeler], outputs=[fname, comment, code])
+    flag.click(record_input, inputs=[fname, comment, code, labeler], outputs=[fname, comment, code])
 
 if __name__ == "__main__":
     app.queue()
